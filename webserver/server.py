@@ -180,7 +180,11 @@ def another():
   names.append(result['name'])  # can also be accessed using result[0]
   cursor.close()  
   
-  return render_template("another.html")
+
+  context = dict(data = names)
+
+
+  return render_template("another.html", **context))
 
 
 # Example of adding new data to the database
