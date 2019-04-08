@@ -203,7 +203,7 @@ def test():
   context = dict(data = names)
 
 
-  return render_template("test.html", **context))
+  return render_template("test.html", **context)
 
 
 if __name__ == "__main__":
