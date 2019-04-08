@@ -186,7 +186,6 @@ def another():
 @app.route('/test')
 def test():
 
-  cursor = g.conn.execute("DELETE FROM viewData")
   cursor = g.conn.execute("SELECT * FROM viewData")
   names = []
   for result in cursor:
@@ -202,7 +201,7 @@ def test():
 @app.route('/add', methods=['POST'])
 def add():
   name = request.form['name']
-  print(name)
+  g.conn.execute("DELETE FROM viewData")
   cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
   g.conn.execute(text(cmd), name1 = name, name2 = name);
   return redirect('/test')
