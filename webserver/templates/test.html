@@ -19,7 +19,7 @@
 
 <form method="POST" action="/view">
 {% for n in data2 %}
-<p> {{n}} <input type="checkbox" name="branch", value = {{n}}></p>
+<p> {{n}} <input type="checkbox" name="branch_{{n}}", value = {{n}}></p>
 {% endfor %}
 </form>
 
