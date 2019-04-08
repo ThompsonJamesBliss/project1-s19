@@ -18,16 +18,17 @@
 
 
 <form method="POST" action="/view">
-<select name="cars" size="4" multiple>
-{% for n in data2 %}
-<p>
+  <select name="cars" size="10" multiple>
+  {% for n in data2 %}
+  <p>
   
-<option value={{n}}>{{n}}</option>
+    <option value={{n}}>{{n}}</option>
 
-</p>
-{% endfor %}
+  </p>
+  {% endfor %}
   
-</select>
+  </select>
+  <input type="submit">
 </form>
 
   
