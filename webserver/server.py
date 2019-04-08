@@ -37,7 +37,7 @@ app = Flask(__name__, template_folder=tmpl_dir)
 
 # Use the DB credentials you received by e-mail
 DB_USER = "pil2104"
-DB_PASSWORD = "Coinsarecool1"
+DB_PASSWORD = "2DJrhu9AoT"
 
 DB_SERVER = "w4111.cisxo09blonu.us-east-1.rds.amazonaws.com"
 
@@ -72,7 +72,7 @@ def before_request():
   try:
     g.conn = engine.connect()
   except:
-    print "uh oh, problem connecting to database"
+    print("uh oh, problem connecting to database")
     import traceback; traceback.print_exc()
     g.conn = None
 
