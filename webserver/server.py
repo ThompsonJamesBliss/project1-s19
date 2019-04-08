@@ -217,7 +217,7 @@ def view():
   
   branch = request.form.getlist('branch')
   
-  #g.conn.execute("DELETE FROM viewData")
+  g.conn.execute("DELETE FROM viewData")
   for inp, loc in enumerate(branch):
     cmd = 'INSERT INTO viewData SELECT * FROM branch WHERE location = :branch1';
     var1=g.conn.execute(text(cmd), branch1 = loc);
