@@ -8,14 +8,7 @@
 
 
 <body>
-  <h1>Some famous Computer Scientists</h1>
-
-  <div>
-    {% for n in data %}
-    <div>{{n}}</div>
-    {% endfor %}
-  </div>
-
+  <h1>Dunder Mifflin Infinite Branch Data</h1>
 
 <form method="POST" action="/view">
   <select name="branch" size="10" multiple>
@@ -29,7 +22,17 @@
   
   </select>
   <input type="submit">
-</form>
+</form>  
+  
+  
+  <div>
+    {% for n in data %}
+    <div>{{n}}</div>
+    {% endfor %}
+  </div>
+
+
+
 
   
 </body>
