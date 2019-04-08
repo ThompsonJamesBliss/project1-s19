@@ -194,7 +194,7 @@ def add():
 @app.route('/view', methods=['POST'])
 def view():
   branch = request.form['branch']
-  cmd = 'SELECT * FROM customer LEFT OUTER JOIN branch ON location WHERE location = :branch1';
+  cmd = 'SELECT * FROM customer as x LEFT OUTER JOIN branch as y ON y.location = x.location WHERE y.location = :branch1';
   g.conn.execute(text(cmd), branch1 = branch);
   return redirect('/test')
 
