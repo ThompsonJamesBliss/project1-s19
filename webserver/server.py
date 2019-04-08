@@ -61,8 +61,8 @@ engine.execute("""CREATE TABLE IF NOT EXISTS test (
 engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 
-engine.execute("""DROP TABLE IF EXISTS test2;""")
-engine.execute("""CREATE TABLE IF NOT EXISTS test2 (
+engine.execute("""DROP TABLE IF EXISTS viewData;""")
+engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
   location text,
   address text
 );""")
@@ -186,8 +186,8 @@ def another():
 @app.route('/test')
 def test():
 
-    
-  cursor = g.conn.execute("SELECT location FROM test2")
+  cursor = g.conn.execute("DELETE FROM viewData")
+  cursor = g.conn.execute("SELECT * FROM viewData")
   names = []
   for result in cursor:
     names.append(result[0])  # can also be accessed using result[0]
@@ -210,7 +210,7 @@ def add():
 @app.route('/view', methods=['POST'])
 def view():
   branch = request.form['branch']
-  cmd = 'INSERT INTO test2 SELECT * FROM branch WHERE location = :branch1';
+  cmd = 'INSERT INTO viewData SELECT * FROM branch WHERE location = :branch1';
   var1=g.conn.execute(text(cmd), branch1 = branch);
   return redirect('/test')
 
