@@ -173,18 +173,7 @@ def index():
 #
 @app.route('/another')
 def another():
-    
-  cursor = g.conn.execute("SELECT name FROM employee")
-  names = []
-  for result in cursor:
-  names.append(result['name'])  # can also be accessed using result[0]
-  cursor.close()  
-  
-
-  context = dict(data = names)
-
-
-  return render_template("another.html", **context))
+  return render_template("another.html")
 
 
 # Example of adding new data to the database
@@ -204,7 +193,17 @@ def login():
     
 @app.route('/test')
 def test():
-  return render_template("test.html")
+  cursor = g.conn.execute("SELECT name FROM employee")
+  names = []
+  for result in cursor:
+  names.append(result['name'])  # can also be accessed using result[0]
+  cursor.close()  
+  
+
+  context = dict(data = names)
+
+
+  return render_template("test.html", **context))
 
 
 if __name__ == "__main__":
