@@ -178,17 +178,8 @@ def another():
 
 @app.route('/test')
 def test():
-  cursor = g.conn.execute("SELECT name FROM employee")
-  names = []
-  for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
-  cursor.close()  
-  
 
-  context = dict(data = names)
-
-
-  return render_template("test.html", **context)
+  return render_template("test.html")
 
 
 # Example of adding new data to the database
@@ -202,11 +193,11 @@ def add():
 
 @app.route('/view', methods=['POST'])
 def view():
-  name = request.form['name']
+  name = request.form['branch']
   print(name)
-  cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
-  g.conn.execute(text(cmd), name1 = name, name2 = name);
-  return redirect('/')
+  cmd = 'SELECT * FROM customer LEFT OUTER JOIN ON branch on location) = (:branch1)(location)';
+  g.conn.execute(text(cmd), branch1 = branch);
+  return redirect('/test')
 
 @app.route('/login')
 def login():
