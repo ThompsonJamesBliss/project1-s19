@@ -61,6 +61,13 @@ engine.execute("""CREATE TABLE IF NOT EXISTS test (
 engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 
+engine.execute("""DROP TABLE IF EXISTS test2;""")
+engine.execute("""CREATE TABLE IF NOT EXISTS test2 (
+  location text,
+  address text
+);""")
+
+
 
 @app.before_request
 def before_request():
@@ -198,9 +205,9 @@ def add():
 @app.route('/view', methods=['POST'])
 def view():
   branch = request.form['branch']
-  cmd = 'SELECT * FROM customer as x LEFT OUTER JOIN branch as y ON y.location = x.location WHERE y.location = :branch1';
+  cmd = 'INSERT INTO test2 VALUES SELECT * FROM branch WHERE y.location = :branch1';
   var1=g.conn.execute(text(cmd), branch1 = branch);
-  return (branch, redirect('/test'))
+  return redirect('/test')
 
 #redirect('/test')
 
