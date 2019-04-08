@@ -187,8 +187,13 @@ def another():
 def test():
 
     
-  var1temp = view()
-  print(var1temp)
+  cursor = g.conn.execute("SELECT * FROM test2")
+  names = []
+  for result in cursor:
+    names.append(result['address'])  # can also be accessed using result[0]
+  cursor.close()
+
+  print(names)
 
   return render_template("test.html")
 
