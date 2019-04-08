@@ -176,6 +176,21 @@ def another():
   return render_template("another.html")
 
 
+@app.route('/test')
+def test():
+  cursor = g.conn.execute("SELECT name FROM employee")
+  names = []
+  for result in cursor:
+    names.append(result['name'])  # can also be accessed using result[0]
+  cursor.close()  
+  
+
+  context = dict(data = names)
+
+
+  return render_template("test.html", **context)
+
+
 # Example of adding new data to the database
 @app.route('/add', methods=['POST'])
 def add():
@@ -191,19 +206,7 @@ def login():
     abort(401)
     this_is_never_executed()
     
-@app.route('/test')
-def test():
-  cursor = g.conn.execute("SELECT name FROM employee")
-  names = []
-  for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
-  cursor.close()  
-  
 
-  context = dict(data = names)
-
-
-  return render_template("test.html", **context)
 
 
 if __name__ == "__main__":
