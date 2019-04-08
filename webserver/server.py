@@ -210,7 +210,7 @@ def add():
 @app.route('/view', methods=['POST'])
 def view():
   branch = request.form['branch']
-  cmd = 'INSERT INTO test2 VALUES SELECT * FROM branch WHERE y.location = :branch1';
+  cmd = 'INSERT INTO test2 VALUES SELECT * FROM branch WHERE location = :branch1';
   var1=g.conn.execute(text(cmd), branch1 = branch);
   return redirect('/test')
 
