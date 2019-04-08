@@ -179,6 +179,13 @@ def another():
 @app.route('/test')
 def test():
 
+    
+  var1temp = view()
+  names = []
+  for result in var1temp:
+    names.append(result['address'])  # can also be accessed using result[0]
+  cursor.close()
+
   return render_template("test.html")
 
 
@@ -195,8 +202,10 @@ def add():
 def view():
   branch = request.form['branch']
   cmd = 'SELECT * FROM customer as x LEFT OUTER JOIN branch as y ON y.location = x.location WHERE y.location = :branch1';
-  g.conn.execute(text(cmd), branch1 = branch);
-  return redirect('/test')
+  var1=g.conn.execute(text(cmd), branch1 = branch);
+  return var1
+
+#redirect('/test')
 
 @app.route('/login')
 def login():
