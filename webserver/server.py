@@ -198,8 +198,15 @@ def add():
   print(name)
   cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
   g.conn.execute(text(cmd), name1 = name, name2 = name);
-  return redirect('/')
+  return redirect('/test')
 
+@app.route('/view', methods=['POST'])
+def view():
+  name = request.form['name']
+  print(name)
+  cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
+  g.conn.execute(text(cmd), name1 = name, name2 = name);
+  return redirect('/')
 
 @app.route('/login')
 def login():
