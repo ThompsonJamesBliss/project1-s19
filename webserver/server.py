@@ -173,7 +173,14 @@ def index():
 #
 @app.route('/another')
 def another():
-  return render_template("index.html")
+    
+  cursor = g.conn.execute("SELECT name FROM employee")
+  names = []
+  for result in cursor:
+  names.append(result['name'])  # can also be accessed using result[0]
+  cursor.close()  
+  
+  return render_template("another.html")
 
 
 # Example of adding new data to the database
