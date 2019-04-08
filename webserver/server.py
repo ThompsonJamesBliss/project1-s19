@@ -187,12 +187,18 @@ def another():
 def test():
 
   cursor = g.conn.execute("SELECT * FROM viewData")
-  names = []
+  view = []
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    view.append(result)  # can also be accessed using result[0]
   cursor.close()
 
-  context = dict(data = names)
+  cursor = g.conn.execute("SELECT location FROM branch")
+  locations = []
+  for result in cursor:
+    locations.append(result[0])
+  cursor.close()
+
+  context = dict(data = view, data2 = locations)
 
   return render_template("test.html", **context)
 
