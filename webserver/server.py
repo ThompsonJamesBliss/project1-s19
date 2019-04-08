@@ -187,15 +187,15 @@ def another():
 def test():
 
     
-  cursor = g.conn.execute("SELECT * FROM test2")
+  cursor = g.conn.execute("SELECT location FROM test2")
   names = []
   for result in cursor:
-    names.append(result['address'])  # can also be accessed using result[0]
+    names.append(result[0])  # can also be accessed using result[0]
   cursor.close()
 
-  print(names)
+  context = dict(data = names)
 
-  return render_template("test.html")
+  return render_template("test.html", **context)
 
 
 # Example of adding new data to the database
