@@ -196,7 +196,7 @@ def test():
   cursor = g.conn.execute("SELECT name FROM employee")
   names = []
   for result in cursor:
-  names.append(result['name'])  # can also be accessed using result[0]
+    names.append(result['name'])  # can also be accessed using result[0]
   cursor.close()  
   
 
