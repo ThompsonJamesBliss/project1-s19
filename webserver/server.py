@@ -218,7 +218,7 @@ def view():
   print(branch)
   #g.conn.execute("DELETE FROM viewData")
   cmd = 'INSERT INTO viewData SELECT * FROM branch WHERE location = :branch1';
-  var1=g.conn.execute(text(cmd), branch1 = branch);
+  var1=g.conn.execute(text(cmd), branch1 = branch[2]);
   return redirect('/test')
 
 #redirect('/test')
