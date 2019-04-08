@@ -201,7 +201,7 @@ def test():
 @app.route('/add', methods=['POST'])
 def add():
   name = request.form['name']
-  g.conn.execute("DELETE FROM viewData")
+  print(name)
   cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
   g.conn.execute(text(cmd), name1 = name, name2 = name);
   return redirect('/test')
@@ -209,6 +209,7 @@ def add():
 @app.route('/view', methods=['POST'])
 def view():
   branch = request.form['branch']
+  g.conn.execute("DELETE FROM viewData")
   cmd = 'INSERT INTO viewData SELECT * FROM branch WHERE location = :branch1';
   var1=g.conn.execute(text(cmd), branch1 = branch);
   return redirect('/test')
