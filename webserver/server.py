@@ -181,10 +181,7 @@ def test():
 
     
   var1temp = view()
-  names = []
-  for result in var1temp:
-    names.append(result['address'])  # can also be accessed using result[0]
-  cursor.close()
+  print(var1temp)
 
   return render_template("test.html")
 
@@ -203,7 +200,7 @@ def view():
   branch = request.form['branch']
   cmd = 'SELECT * FROM customer as x LEFT OUTER JOIN branch as y ON y.location = x.location WHERE y.location = :branch1';
   var1=g.conn.execute(text(cmd), branch1 = branch);
-  return var1
+  return (branch, redirect('/test'))
 
 #redirect('/test')
 
