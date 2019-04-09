@@ -131,7 +131,7 @@ def index():
   #
   # example of a database query
   #
-  cursor = g.conn.execute("SELECT address FROM branch")
+  cursor = g.conn.execute("SELECT address FROM branch WHERE location = 'New York'")
   names = []
   for result in cursor:
     names.append(result['address'])  # can also be accessed using result[0]
