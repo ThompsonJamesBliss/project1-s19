@@ -1,5 +1,7 @@
 #!/usr/bin/env python2.7
 
+import * from passwords.py
+
 """
 Columbia W4111 Intro to databases
 Example webserver
@@ -36,10 +38,10 @@ app = Flask(__name__, template_folder=tmpl_dir)
 # For your convenience, we already set it to the class database
 
 # Use the DB credentials you received by e-mail
-DB_USER = "pil2104"
-DB_PASSWORD = "2DJrhu9AoT"
+DB_USER = user
+DB_PASSWORD = password
 
-DB_SERVER = "w4111.cisxo09blonu.us-east-1.rds.amazonaws.com"
+DB_SERVER = server
 
 DATABASEURI = "postgresql://"+DB_USER+":"+DB_PASSWORD+"@"+DB_SERVER+"/w4111"
 
