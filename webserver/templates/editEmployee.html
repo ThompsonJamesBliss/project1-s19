@@ -1,0 +1,57 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+
+<body>
+  <h1>Dunder Mifflin Branch Employee Data Edit</h1>
+
+<form method="POST" action="/view">
+  <select name="selectID" size="12" multiple>
+  {% for n in data1 %}
+  <p>
+  
+    <option value={{n}}>{{n}}</option>
+
+  </p>
+  {% endfor %}
+  
+  </select>
+  <input type="submit">
+</form>  
+
+<div>
+    {% for n in data3 %}
+    <div>{{n}}</div>
+    {% endfor %}
+</div>
+
+
+
+<form method="POST" action="/view">
+  <select name="selectLevel" size="12" multiple>
+  {% for n in data2 %}
+  <p>
+  
+    <option value={{n}}>{{n}}</option>
+
+  </p>
+  {% endfor %}
+  
+  </select>
+  <input type="submit">
+</form>  
+
+
+
+<p><a href="/index">Return to Home</a></p>
+
+  
+</body>
+
+
+</html>
