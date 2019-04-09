@@ -186,8 +186,8 @@ def another():
   return render_template("another.html")
 
 
-@app.route('/test')
-def test():
+@app.route('/dataview')
+def dataview():
 
   cursor = g.conn.execute("SELECT * FROM viewData")
   view = []
@@ -203,28 +203,28 @@ def test():
 
   context = dict(data = view, data2 = locations)
 
-  return render_template("test.html", **context)
+  return render_template("dataview.html", **context)
 
 
 # Example of adding new data to the database
-@app.route('/add', methods=['POST'])
-def add():
-  name = request.form['name']
-  print(name)
-  cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
-  g.conn.execute(text(cmd), name1 = name, name2 = name);
-  return redirect('/test')
+#@app.route('/add', methods=['POST'])
+#def add():
+#  name = request.form['name']
+#  print(name)
+#  cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
+#  g.conn.execute(text(cmd), name1 = name, name2 = name);
+#  return redirect('/test')
 
 @app.route('/view', methods=['POST'])
 def view():
   
-  branch = request.form.getlist('branch')
+  locations = request.form.getlist('locations')
   
   g.conn.execute("DELETE FROM viewData")
-  for inp, loc in enumerate(branch):
-    cmd = 'INSERT INTO viewData SELECT * FROM branch WHERE location = :branch1';
-    var1=g.conn.execute(text(cmd), branch1 = loc);
-  return redirect('/test')
+  for inp, loc in enumerate(locations):
+    cmd = 'INSERT INTO viewData SELECT * FROM branch WHERE location = :branchloc';
+    var1=g.conn.execute(text(cmd), branchloc = loc);
+  return redirect('/dataview')
 
 #redirect('/test')
 
