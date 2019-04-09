@@ -240,7 +240,7 @@ def editemployee():
   cursor = g.conn.execute("SELECT DISTINCT level FROM employee")
   levels = []
   for result in cursor:
-    empdata.append(result[0])
+    levels.append(result[0])
   cursor.close()
 
 
