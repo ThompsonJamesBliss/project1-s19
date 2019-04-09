@@ -64,10 +64,21 @@ engine.execute("""CREATE TABLE IF NOT EXISTS test (
 engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 
+#creating tables for viewing
+
 engine.execute("""DROP TABLE IF EXISTS viewData;""")
 engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
   location text,
   address text
+);""")
+
+
+engine.execute("""DROP TABLE IF EXISTS viewEmployee;""")
+engine.execute("""CREATE TABLE IF NOT EXISTS Employee (
+  ID text,
+  name text,
+  salary int
+  level text,
 );""")
 
 
@@ -214,6 +225,35 @@ def dataview():
 #  cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
 #  g.conn.execute(text(cmd), name1 = name, name2 = name);
 #  return redirect('/test')
+
+@app.route('/editEmployee')
+def editEmployee():
+  
+
+
+  cursor = g.conn.execute("SELECT id FROM employee")
+  ids = []
+  for result in cursor:
+    ids.append(result[0])
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT DISTINCT level FROM employee")
+  levels = []
+  for result in cursor:
+    empdata.append(result[0])
+  cursor.close()
+
+
+  cursor = g.conn.execute("SELECT * FROM viewEmployee")
+  empdata = []
+  for result in cursor:
+    empdata.append(result[0])
+  cursor.close()
+  
+    
+  context = dict(data1 = ids, data2 = levels, data3 = empdata)
+
+  return render_template("editEmployee.html", **context)
 
 @app.route('/view', methods=['POST'])
 def view():
