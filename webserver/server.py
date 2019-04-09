@@ -78,7 +78,7 @@ engine.execute("""CREATE TABLE IF NOT EXISTS Employee (
   ID text,
   name text,
   salary int
-  level text,
+  level text
 );""")
 
 
