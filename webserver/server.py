@@ -77,7 +77,7 @@ engine.execute("""DROP TABLE IF EXISTS viewEmployee;""")
 engine.execute("""CREATE TABLE IF NOT EXISTS Employee (
   ID text,
   name text,
-  salary int
+  salary int,
   level text
 );""")
 
