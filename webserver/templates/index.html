@@ -11,13 +11,10 @@
   <h1>Dunder Mifflin Infinity</h1>
   <div>{{data}}</div>
 
-  <div>
-    {% for n in data %}
-    <div>{{n}}</div>
-    {% endfor %}
-  </div>
 
 <p><a href="/dataview">View Data on Branches</a></p>
+<p><a href="/editEmployee">Edit Employee Data</a></p>
+
 
 <form method="POST" action="/add">
 <p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
