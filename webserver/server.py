@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7
 
-import * from passwords.py
+from info import *
 
 """
 Columbia W4111 Intro to databases
