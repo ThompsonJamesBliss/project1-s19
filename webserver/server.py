@@ -226,7 +226,7 @@ def dataview():
 #  g.conn.execute(text(cmd), name1 = name, name2 = name);
 #  return redirect('/test')
 
-@app.route('/editEmployee')
+@app.route('/editemployee')
 def editEmployee():
   
 
@@ -253,7 +253,7 @@ def editEmployee():
     
   context = dict(data1 = ids, data2 = levels, data3 = empdata)
 
-  return render_template("editEmployee.html", **context)
+  return render_template("editemployee.html", **context)
 
 @app.route('/view', methods=['POST'])
 def view():
