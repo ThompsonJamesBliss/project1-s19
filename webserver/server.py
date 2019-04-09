@@ -74,7 +74,7 @@ engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
 
 
 engine.execute("""DROP TABLE IF EXISTS viewEmployee;""")
-engine.execute("""CREATE TABLE IF NOT EXISTS Employee (
+engine.execute("""CREATE TABLE IF NOT EXISTS viewEmployee (
   ID text,
   name text,
   salary int,
@@ -229,8 +229,6 @@ def dataview():
 @app.route('/editemployee')
 def editemployee():
   
-
-
   cursor = g.conn.execute("SELECT id FROM employee")
   ids = []
   for result in cursor:
@@ -247,11 +245,13 @@ def editemployee():
   cursor = g.conn.execute("SELECT * FROM viewEmployee")
   empdata = []
   for result in cursor:
-    empdata.append(result[0])
+    empdata.append(result)
   cursor.close()
   
     
   context = dict(data1 = ids, data2 = levels, data3 = empdata)
+
+  
 
   return render_template("editemployee.html", **context)
 
