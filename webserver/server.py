@@ -227,7 +227,7 @@ def dataview():
 #  return redirect('/test')
 
 @app.route('/editemployee')
-def editEmployee():
+def editemployee():
   
 
 
