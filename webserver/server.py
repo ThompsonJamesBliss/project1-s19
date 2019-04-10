@@ -244,7 +244,7 @@ def editemployee():
   cursor.close()
 
 
-  cursor = g.conn.execute("SELECT * FROM viewEmployee")
+  cursor = g.conn.execute("SELECT * FROM viewEmployee LIMIT 1")
   empdata = []
   for result in cursor:
     empdata.append(result)
@@ -285,6 +285,7 @@ def changelevel():
   
   level_input = request.form['selectLevel']
   
+  
   cmd = 'UPDATE employee SET level = (:levelval) WHERE ID IN (SELECT ID FROM viewEmployee)';
   
   g.conn.execute(text(cmd), levelval = level_input);
@@ -299,11 +300,41 @@ def changelevel():
   
   return redirect('/editemployee')
 
+@app.route('/changesal', methods=['POST'])
+def changesal():
+  
+  salary_input = request.form['newsal']
+    
+  if isParsableNum(salary_input):
+  
+    cmd = 'UPDATE employee SET salary = (:salaryval) WHERE ID IN (SELECT ID FROM viewEmployee)';
+  
+    g.conn.execute(text(cmd), salaryval = int(float(salary_input)));
+  
+    g.conn.execute('INSERT INTO viewEmployee SELECT ID, name, salary, level FROM employee WHERE ID IN (SELECT ID FROM viewEmployee)')
+  
+    cmd = 'DELETE FROM viewEmployee WHERE salary != (:salaryval)'
+  
+    g.conn.execute(text(cmd), salaryval = int(float(salary_input)));
+
+
+  
+  return redirect('/editemployee')
+
+
+
 @app.route('/login')
 def login():
     abort(401)
     this_is_never_executed()
     
+
+def isParsableNum(num):
+    try:
+        int(float(num))
+        return True
+    except:
+        return False
 
 
 
