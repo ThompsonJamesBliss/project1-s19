@@ -266,6 +266,17 @@ def view():
     var1=g.conn.execute(text(cmd), branchloc = loc);
   return redirect('/dataview')
 
+
+@app.route('/viewemployee', methods=['POST'])
+def viewemployee():
+  
+  id_input = request.form['selectID']
+  
+  g.conn.execute("DELETE FROM viewEmployee")
+  cmd = 'INSERT INTO viewEmployee SELECT ID, name, salary, level FROM employee WHERE ID = (:idval)';
+  g.conn.execute(text(cmd), idval = id_input);
+  return redirect('/editemployee')
+
 #redirect('/test')
 
 @app.route('/login')
