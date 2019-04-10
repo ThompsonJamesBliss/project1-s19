@@ -274,7 +274,10 @@ def viewemployee():
   
   id_input = request.form['selectID']
   
+  #deleting everything during view so it will not bleed into next view
   g.conn.execute("DELETE FROM viewEmployee")
+  
+  #inserting new employee info into view
   cmd = 'INSERT INTO viewEmployee SELECT ID, name, salary, level FROM employee WHERE ID = (:idval)';
   g.conn.execute(text(cmd), idval = id_input);
   return redirect('/editemployee')
@@ -285,13 +288,16 @@ def changelevel():
   
   level_input = request.form['selectLevel']
   
-  
+  #updating value in employee (actual database)
   cmd = 'UPDATE employee SET level = (:levelval) WHERE ID IN (SELECT ID FROM viewEmployee)';
   
   g.conn.execute(text(cmd), levelval = level_input);
   
+  #inserting new value into view employee (what will be viewed on webapp)
   g.conn.execute('INSERT INTO viewEmployee SELECT ID, name, salary, level FROM employee WHERE ID IN (SELECT ID FROM viewEmployee)')
   
+  
+  #deleting old value
   cmd = 'DELETE FROM viewEmployee WHERE level != (:levelval)'
   
   g.conn.execute(text(cmd), levelval = level_input);
@@ -304,15 +310,18 @@ def changelevel():
 def changesal():
   
   salary_input = request.form['newsal']
-    
+  #checking if number is parsable
   if isParsableNum(salary_input):
   
+    #updating value in employee (actual database)
     cmd = 'UPDATE employee SET salary = (:salaryval) WHERE ID IN (SELECT ID FROM viewEmployee)';
   
     g.conn.execute(text(cmd), salaryval = int(float(salary_input)));
   
+    #inserting new value into view employee (what will be viewed on webapp)
     g.conn.execute('INSERT INTO viewEmployee SELECT ID, name, salary, level FROM employee WHERE ID IN (SELECT ID FROM viewEmployee)')
   
+    #deleting old value
     cmd = 'DELETE FROM viewEmployee WHERE salary != (:salaryval)'
   
     g.conn.execute(text(cmd), salaryval = int(float(salary_input)));
