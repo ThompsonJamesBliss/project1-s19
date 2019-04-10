@@ -73,6 +73,8 @@ engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
 );""")
 
 
+engine.execute("""UPDATE employee SET LEVEL = \'low\' WHERE id = \'mgs1\' """)
+
 engine.execute("""DROP TABLE IF EXISTS viewEmployee;""")
 engine.execute("""CREATE TABLE IF NOT EXISTS viewEmployee (
   ID text,
@@ -277,7 +279,25 @@ def viewemployee():
   g.conn.execute(text(cmd), idval = id_input);
   return redirect('/editemployee')
 
-#redirect('/test')
+
+@app.route('/changelevel', methods=['POST'])
+def changelevel():
+  
+  level_input = request.form['selectLevel']
+  
+  cmd = 'UPDATE employee SET level = (:levelval) WHERE ID IN (SELECT ID FROM viewEmployee)';
+  
+  g.conn.execute(text(cmd), levelval = level_input);
+  
+  g.conn.execute('INSERT INTO viewEmployee SELECT ID, name, salary, level FROM employee WHERE ID IN (SELECT ID FROM viewEmployee)')
+  
+  cmd = 'DELETE FROM viewEmployee WHERE level != (:levelval)'
+  
+  g.conn.execute(text(cmd), levelval = level_input);
+
+
+  
+  return redirect('/editemployee')
 
 @app.route('/login')
 def login():

@@ -12,7 +12,7 @@
 
 Choose an Employee:
 
-<form method="POST" action="/viewemployee		">
+<form method="POST" action="/viewemployee">
   <input name = "selectID" list = "selectID">
   <datalist id = "selectID">
   {% for n in data1 %}
@@ -35,7 +35,7 @@ Choose an Employee:
 
 Choose the level you wish to change them to:
 
-<form method="POST" action="/view">
+<form method="POST" action="/changelevel">
   <select name="selectLevel" size="3" multiple>
   {% for n in data2 %}
   <p>
