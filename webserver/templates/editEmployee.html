@@ -27,10 +27,30 @@ Choose an Employee:
   <input type="submit">
 </form>  
 
+
+
 <div>
+<table style="width:50%">
+  <tr>
+    <th align=left>Employee ID</th>
+    <th align=left>Employee Name</th> 
+    <th align=left>Salary</th>
+    <th align=left>Clearance Level</th>
+  </tr>
+  <tbody>
     {% for n in data3 %}
-    <div>{{n}}</div>
+    <tr>
+        <td>{{n[0]}}</td>
+        <td>{{n[1]}}</td>
+        <td>{{n[2]}}</td>
+        <td>{{n[3]}}</td>
+    </tr>
+    <!--<div>{{n}}</div>-->
     {% endfor %}
+  </tbody>
+</table>
+
+<hr></hr>
 </div>
 
 Choose the level you wish to change them to:
@@ -60,6 +80,19 @@ Choose the level you wish to change them to:
 
   
 </body>
+
+<script>
+function productsAdd() {
+  $("#productTable tbody").append(
+      "<tr>" +
+        "<td>My First Video</td>" +
+        "<td>6/11/2015</td>" +
+        "<td>www.pluralsight.com</td>" +
+      "</tr>"
+  );
+}
+</script>
+
 
 
 </html>
