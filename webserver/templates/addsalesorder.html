@@ -1,0 +1,80 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+<body>
+  <h1>Dunder Mifflin Add Sales Order</h1>
+
+
+
+<h2>Current Sales Orders:</h2>
+
+<div>
+<table style="width:50%">
+  <tr>
+    <th align=left>Salesperson ID</th>
+    <th align=left>Customer Name</th>
+    <th align=left>Order Number</th> 
+    <th align=left>Revenue</th>
+    <th align=left>Quantity</th>
+  </tr>
+  <tbody>
+    {% for n in data2 %}
+    <tr>
+        <td>{{n[0]}}</td>
+        <td>{{n[1]}}</td>
+        <td>{{n[2]}}</td>
+        <td>{{n[3]}}</td>
+	<td>{{n[4]}}</td>
+    </tr>
+    <!--<div>{{n}}</div>-->
+    {% endfor %}
+  </tbody>
+</table>
+
+<hr></hr>
+</div>
+
+
+<h2>Add a Salesorder</h2>
+
+
+<form method="POST" action="/addsale">
+
+<p>Choose Customer</p>
+
+<input name = "selectcustomer" list = "selectcustomer">
+<datalist id = "selectcustomer">
+  {% for n in data3 %}
+  <p>
+  
+    <option value={{n}}>{{n}}</option>
+
+  </p>
+  {% endfor %}
+  
+</datalist>
+
+
+
+
+<p>Enter Company Revenue: <input type="text" name="revenue"></p>
+<p>Enter Quantity: <input type="text" name="quantity"></p>
+
+
+
+ <input type="submit" value="Submit"></p>
+</form>
+
+<p><a href="/">Return to Home</a></p>
+
+  
+</body>
+
+
+
+</html>

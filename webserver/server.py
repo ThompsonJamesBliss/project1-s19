@@ -53,15 +53,6 @@ DATABASEURI = "postgresql://"+DB_USER+":"+DB_PASSWORD+"@"+DB_SERVER+"/w4111"
 engine = create_engine(DATABASEURI)
 
 
-# Here we create a test table and insert some values in it
-
-
-engine.execute("""DROP TABLE IF EXISTS test;""")
-engine.execute("""CREATE TABLE IF NOT EXISTS test (
-  id serial,
-  name text
-);""")
-engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 
 #creating tables for viewing
@@ -75,9 +66,6 @@ engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
   salesrevenue float
 );""")
 
-
-engine.execute("""UPDATE employee SET LEVEL = \'low\' WHERE id = \'mgs1\' """)
-
 engine.execute("""DROP TABLE IF EXISTS viewEmployee;""")
 engine.execute("""CREATE TABLE IF NOT EXISTS viewEmployee (
   ID text,
@@ -86,6 +74,16 @@ engine.execute("""CREATE TABLE IF NOT EXISTS viewEmployee (
   level text
 );""")
 
+
+engine.execute("""DROP TABLE IF EXISTS salesorder_temp;""")
+engine.execute("""CREATE TABLE IF NOT EXISTS salesorder_temp (
+  customer_name text,
+  order_num int, 
+  salesorder_revenue float,
+  quantity int
+);""")
+
+#engine.execute("""INSERT INTO salesorder_temp SELECT salesorder.customer_name, salesorder.order_num, salesorder.salesorder_revenue, salesorder.quantity FROM salesorder);""")
 
 
 @app.before_request
@@ -264,7 +262,12 @@ def editemployee():
 @app.route('/editcustomer')
 def editcustomer():
   
-  cursor = g.conn.execute("SELECT customer.customer_name, customer.company_size, customer.location, salesperson_customer_R.id FROM customer JOIN salesperson_customer_R on customer.customer_name = salesperson_customer_R.customer_name")
+  cursor = g.conn.execute('''SELECT customer.customer_name,
+                          customer.company_size,
+                          customer.location,
+                          salesperson_customer_R.id FROM 
+                          customer JOIN salesperson_customer_R on
+                          customer.customer_name = salesperson_customer_R.customer_name''')
 
   names = []
   for result in cursor:
@@ -289,6 +292,36 @@ def editcustomer():
   
 
   return render_template("editcustomer.html", **context)
+
+@app.route('/addsalesorder')
+def addsalesorder():
+
+
+
+  cursor = g.conn.execute("SELECT id FROM salesperson")
+  ids = []
+  for result in cursor:
+    ids.append(result[0])
+  cursor.close()
+  
+
+ 
+  cursor = g.conn.execute('''SELECT * FROM salesorder''')
+  salesorder = []
+  for result in cursor:
+    salesorder.append(result)
+  cursor.close()
+  
+  cursor = g.conn.execute('''SELECT customer_name FROM customer''')
+  customername = []
+  for result in cursor:
+    customername.append(result[0])
+  cursor.close()
+
+
+  context = dict(data1 = ids, data2 = salesorder, data3 = customername)
+
+  return render_template("addsalesorder.html", **context)
 
 
 
@@ -419,6 +452,47 @@ def addcustomer():
   
   
   return redirect('/editcustomer')
+
+@app.route('/viewsalesorder', methods=['POST'])
+def viewsalesorder():
+  
+  id_input = request.form['selectID']
+  
+  #deleting everything during view so it will not bleed into next view
+  g.conn.execute("DELETE FROM salesorder_temp")
+  
+  #inserting new employee info into view
+  cmd = '''INSERT INTO salesorder_temp SELECT customer_name, order_num, 
+  salesorder_revenue, quantity FROM salesorder WHERE ID = (:idval)''';
+  g.conn.execute(text(cmd), idval = id_input);
+  return redirect('/addsalesorder')
+
+
+@app.route('/addsale', methods=['POST'])
+def addsale():
+  
+  nameinput = request.form['selectcustomer']
+  revenue = request.form['revenue']
+  quantity = request.form['quantity']
+  
+  if isParsableNum(revenue) and isParsableNum(quantity) and int(float(revenue)) > 0 and int(float(quantity)) > 0:
+      
+      cmd = '''INSERT INTO salesorder VALUES(
+      (SELECT ID from salesperson_customer_R WHERE customer_name = (:nameval)),
+      (:nameval), 
+      (SELECT order_num + 1 FROM salesorder ORDER BY -order_num LIMIT 1),
+      (:revenueval), 
+      (:quantval))'''
+      
+      
+      g.conn.execute(text(cmd), nameval = nameinput,
+                     revenueval = float(revenue),
+                     quantval = int(float(quantity)));
+  
+  
+  
+  return redirect('/addsalesorder')
+
 
 
 @app.route('/login')
