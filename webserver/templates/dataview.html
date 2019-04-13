@@ -28,9 +28,25 @@
   
   
   <div>
+  <table style="width:50%">
+  <tr>
+    <th align=left>Branch Location</th>
+    <th align=left>Branch Profit</th> 
+    <th align=left>Number of Customers</th>
+    <th align=left>Quantity Sold</th>
+    <th align=left>Sales Revenue</th>
+  </tr>
+  <tbody>
     {% for n in data %}
-    <div>{{n}}</div>
+    <tr>
+        <td>{{n[0]}}</td>
+        <td>{{n[1]}}</td>
+        <td>{{n[2]}}</td>
+        <td>{{n[3]}}</td>
+        <td>{{n[4   ]}}</td>
+    </tr>
     {% endfor %}
+    </table>
   </div>
 
 

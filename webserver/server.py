@@ -69,7 +69,10 @@ engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'
 engine.execute("""DROP TABLE IF EXISTS viewData;""")
 engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
   location text,
-  address text
+  branch_profit float,
+  no_customers int,
+  quant_sold int,
+  salesrevenue float
 );""")
 
 
@@ -202,7 +205,7 @@ def another():
 @app.route('/dataview')
 def dataview():
 
-  cursor = g.conn.execute("SELECT * FROM viewData")
+  cursor = g.conn.execute('''SELECT * FROM viewData''')
   view = []
   for result in cursor:
     view.append(result)  # can also be accessed using result[0]
@@ -296,7 +299,20 @@ def view():
   
   g.conn.execute("DELETE FROM viewData")
   for inp, loc in enumerate(locations):
-    cmd = 'INSERT INTO viewData SELECT * FROM branch WHERE location = :branchloc';
+    cmd = '''INSERT INTO viewData select x.location, sum(x.profit) as Branch_profit,y.no_customers as No_customers, z.Quantsold, z.salesRevenue
+    from
+	((select location,department_name, (dept_revenue - dept_cost) as profit
+	from department_branch_r) as x
+	left outer join
+	(select location, count(*) as no_customers
+	from customer
+	group by location) as y on y.location = x.location)
+	left outer join 
+	(select j.location, sum(p.quantity) as Quantsold, sum(p.salesorder_revenue) as salesRevenue
+	 from salesorder as p left outer join customer as j on p.customer_name = j.customer_name
+	 group by j.location) as z on z.location = y.location
+where x.location = :branchloc
+group by x.location, y.no_customers, z.Quantsold, z.salesRevenue''';
     var1=g.conn.execute(text(cmd), branchloc = loc);
   return redirect('/dataview')
 
