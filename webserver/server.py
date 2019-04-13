@@ -312,7 +312,8 @@ def view():
 	 from salesorder as p left outer join customer as j on p.customer_name = j.customer_name
 	 group by j.location) as z on z.location = y.location
 where x.location = :branchloc
-group by x.location, y.no_customers, z.Quantsold, z.salesRevenue''';
+group by x.location, y.no_customers, z.Quantsold, z.salesRevenue
+order by z.salesRevenue desc''';
     var1=g.conn.execute(text(cmd), branchloc = loc);
   return redirect('/dataview')
 
