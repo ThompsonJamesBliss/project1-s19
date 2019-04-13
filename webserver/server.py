@@ -274,7 +274,7 @@ def editcustomer():
     names.append(result)
   cursor.close()
 
-  cursor = g.conn.execute("SELECT id FROM salesperson")
+  cursor = g.conn.execute("SELECT id FROM salesperson WHERE level != \'High\'")
   ids = []
   for result in cursor:
     ids.append(result[0])
