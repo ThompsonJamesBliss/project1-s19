@@ -1,0 +1,102 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+<body>
+  <h1>Dunder Mifflin Edit Customer</h1>
+
+
+<h2>Current Customers:</h2>
+
+<div>
+<table style="width:50%">
+  <tr>
+    <th align=left>Name</th>
+    <th align=left>Number of Employees</th> 
+    <th align=left>Dunder Mifflin Service Location</th>
+    <th align=left>Dunder Mifflin Representative ID</th>
+  </tr>
+  <tbody>
+    {% for n in data1 %}
+    <tr>
+        <td>{{n[0]}}</td>
+        <td>{{n[1]}}</td>
+        <td>{{n[2]}}</td>
+        <td>{{n[3]}}</td>
+    </tr>
+    <!--<div>{{n}}</div>-->
+    {% endfor %}
+  </tbody>
+</table>
+
+<hr></hr>
+</div>
+
+<h2>Delete a Customer</h2>
+
+<form method="POST" action="/deletecustomer">
+  <input name = "deletecustomer" list = "deletecustomer">
+  <datalist id = "deletecustomer">
+  {% for n in data1 %}
+  <p>
+  
+    <option value={{n[0]}}>{{n[0]}}</option>
+
+  </p>
+  {% endfor %}
+  
+  </datalist>
+  <input type="submit">
+</form>  
+
+
+<h2>Add a Customer</h2>
+
+
+<form method="POST" action="/addcustomer">
+<p>Enter Customer Name: <input type="text" name="customername"></p>
+<p>Enter Company Size: <input type="text" name="companysize"></p>
+<p>Choose Dunder Mifflin Representative ID</p>
+
+<input name = "selectID" list = "selectID">
+<datalist id = "selectID">
+  {% for n in data2 %}
+  <p>
+  
+    <option value={{n}}>{{n}}</option>
+
+  </p>
+  {% endfor %}
+  
+</datalist>
+
+<p>Choose Branch</p>
+
+<input name = "selectlocation" list = "selectlocation">
+<datalist id = "selectlocation">
+  {% for n in data3 %}
+  <p>
+  
+    <option value={{n}}>{{n}}</option>
+
+  </p>
+  {% endfor %}
+  
+</datalist>
+
+
+ <input type="submit" value="Submit"></p>
+</form>
+
+<p><a href="/">Return to Home</a></p>
+
+  
+</body>
+
+
+
+</html>

@@ -257,6 +257,38 @@ def editemployee():
 
   return render_template("editemployee.html", **context)
 
+
+@app.route('/editcustomer')
+def editcustomer():
+  
+  cursor = g.conn.execute("SELECT customer.customer_name, customer.company_size, customer.location, salesperson_customer_R.id FROM customer JOIN salesperson_customer_R on customer.customer_name = salesperson_customer_R.customer_name")
+
+  names = []
+  for result in cursor:
+    names.append(result)
+  cursor.close()
+
+  cursor = g.conn.execute("SELECT id FROM salesperson")
+  ids = []
+  for result in cursor:
+    ids.append(result[0])
+  cursor.close()
+  
+  cursor = g.conn.execute("SELECT location FROM branch")
+  locations = []
+  for result in cursor:
+    locations.append(result[0])
+  cursor.close()
+  
+    
+  context = dict(data1 = names, data2 = ids, data3 = locations)
+
+  
+
+  return render_template("editcustomer.html", **context)
+
+
+
 @app.route('/view', methods=['POST'])
 def view():
   
@@ -311,7 +343,7 @@ def changesal():
   
   salary_input = request.form['newsal']
   #checking if number is parsable
-  if isParsableNum(salary_input):
+  if isParsableNum(salary_input) and int(float(salary_input)) >= 20:
   
     #updating value in employee (actual database)
     cmd = 'UPDATE employee SET salary = (:salaryval) WHERE ID IN (SELECT ID FROM viewEmployee)';
@@ -330,6 +362,46 @@ def changesal():
   
   return redirect('/editemployee')
 
+
+@app.route('/deletecustomer', methods=['POST'])
+def deletecustomer():
+  
+  nameinput = request.form['deletecustomer']
+  
+  #deleteing employee with name
+  cmd1 = 'DELETE FROM salesperson_customer_R WHERE customer_name = (:nameval)';
+  cmd2 = 'DELETE FROM customer WHERE customer_name = (:nameval)';
+  g.conn.execute(text(cmd1), nameval = nameinput);
+  g.conn.execute(text(cmd2), nameval = nameinput);
+  return redirect('/editcustomer')
+
+
+@app.route('/addcustomer', methods=['POST'])
+def addcustomer():
+  
+  nameinput = request.form['customername']
+  companysize = request.form['companysize']
+  ID = request.form['selectID']
+  location = request.form['selectlocation']
+  
+  if isParsableNum(companysize) and int(float(companysize)) >= 1:
+      
+      cmd = 'INSERT INTO customer VALUES((:nameval), (:sizeval), (:locval))';
+      g.conn.execute(text(cmd),
+                     nameval = nameinput,
+                     sizeval = int(float(companysize)),
+                     locval = location);
+      
+      cmd = 'INSERT INTO salesperson_customer_R VALUES((:idval), (:nameval))'
+      
+      g.conn.execute(text(cmd),
+                     nameval = nameinput,
+                     idval = ID);
+        
+  
+  
+  
+  return redirect('/editcustomer')
 
 
 @app.route('/login')

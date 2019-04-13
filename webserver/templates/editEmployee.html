@@ -10,7 +10,7 @@
   <h1>Dunder Mifflin Branch Employee Data Edit</h1>
 
 
-Choose an Employee:
+<h2>Choose an Employee:</h2>
 
 <form method="POST" action="/viewemployee">
   <input name = "selectID" list = "selectID">
@@ -53,7 +53,7 @@ Choose an Employee:
 <hr></hr>
 </div>
 
-Choose the level you wish to change them to:
+<h2>Choose the level you wish to change them to:</h2>
 
 <form method="POST" action="/changelevel">
   <select name="selectLevel" size="3" multiple>
@@ -69,9 +69,9 @@ Choose the level you wish to change them to:
   <input type="submit">
 </form>  
 
-
+<h2>Enter New Salary:</h2>
 <form method="POST" action="/changesal">
-<p>Enter New Salary: <input type="text" name="newsal"> <input type="submit" value="Submit"></p>
+<p> <input type="text" name="newsal"> <input type="submit" value="Submit"></p>
 </form>
 
 
@@ -80,18 +80,6 @@ Choose the level you wish to change them to:
 
   
 </body>
-
-<script>
-function productsAdd() {
-  $("#productTable tbody").append(
-      "<tr>" +
-        "<td>My First Video</td>" +
-        "<td>6/11/2015</td>" +
-        "<td>www.pluralsight.com</td>" +
-      "</tr>"
-  );
-}
-</script>
 
 
 
