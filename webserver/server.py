@@ -349,7 +349,7 @@ group by x.location, y.no_customers, z.Quantsold, z.salesRevenue
 order by z.salesRevenue desc''';
     var1=g.conn.execute(text(cmd), branchloc = loc);
   return redirect('/dataview')
-
+#
 
 @app.route('/viewemployee', methods=['POST'])
 def viewemployee():
