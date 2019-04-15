@@ -60,6 +60,7 @@ engine = create_engine(DATABASEURI)
 engine.execute("""DROP TABLE IF EXISTS viewData;""")
 engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
   location text,
+  address text,
   branch_profit float,
   no_customers int,
   quant_sold int,
@@ -332,8 +333,8 @@ def view():
   
   g.conn.execute("DELETE FROM viewData")
   for inp, loc in enumerate(locations):
-    cmd = '''INSERT INTO viewData select x.location, sum(x.profit) as Branch_profit,y.no_customers as No_customers, z.Quantsold, z.salesRevenue
-    from
+    cmd = '''INSERT INTO viewData select x.location, t.address, sum(x.profit) as Branch_profit,y.no_customers as No_customers, z.Quantsold, z.salesRevenue
+from
 	((select location,department_name, (dept_revenue - dept_cost) as profit
 	from department_branch_r) as x
 	left outer join
@@ -344,8 +345,9 @@ def view():
 	(select j.location, sum(p.quantity) as Quantsold, sum(p.salesorder_revenue) as salesRevenue
 	 from salesorder as p left outer join customer as j on p.customer_name = j.customer_name
 	 group by j.location) as z on z.location = y.location
+	left outer join branch as t on t.location = z.location
 where x.location = :branchloc
-group by x.location, y.no_customers, z.Quantsold, z.salesRevenue
+group by x.location, y.no_customers, z.Quantsold, z.salesRevenue,t.address
 order by z.salesRevenue desc''';
     var1=g.conn.execute(text(cmd), branchloc = loc);
   return redirect('/dataview')
