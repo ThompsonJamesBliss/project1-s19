@@ -57,6 +57,11 @@ engine = create_engine(DATABASEURI)
 
 #creating tables for viewing
 
+engine.execute("""DROP TABLE IF EXISTS test2;""")
+
+engine.execute("""DROP TABLE IF EXISTS test;""")
+
+
 engine.execute("""DROP TABLE IF EXISTS viewData;""")
 engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
   location text,
@@ -84,6 +89,16 @@ engine.execute("""CREATE TABLE IF NOT EXISTS salesorder_temp (
   salesorder_revenue float,
   quantity int
 );""")
+
+
+engine.execute("""DROP TABLE IF EXISTS other_roles_tmp;""")
+engine.execute("""CREATE TABLE IF NOT EXISTS other_roles_tmp (
+  ID text,
+  job_function text
+);""")
+
+
+
 
 #engine.execute("""INSERT INTO salesorder_temp SELECT salesorder.customer_name, salesorder.order_num, salesorder.salesorder_revenue, salesorder.quantity FROM salesorder);""")
 
@@ -247,17 +262,22 @@ def editemployee():
   cursor.close()
 
 
+  engine.execute("""INSERT INTO other_roles_tmp(ID, job_function)
+               VALUES( (SELECT manager.ID FROM manager WHERE ), 'Manager');""")
+
   cursor = g.conn.execute('''SELECT * FROM viewEmployee 
                           
                           
+                          LEFT JOIN   (SELECT * FROM other_roles) as other_roles_temp
+                                      ON viewEmployee.ID = other_roles_temp.ID
+                         
                           LEFT JOIN (SELECT ID, 'Manager' FROM Manager) as Manager_temp
                           ON viewEmployee.ID = Manager_temp.ID 
                           
                           LEFT JOIN (SELECT ID, 'salesperson' FROM salesperson) as salesperson_temp
                           ON viewEmployee.ID = salesperson_temp.ID 
                           
-                          LEFT JOIN (SELECT * FROM other_roles) as other_roles_temp
-                          ON viewEmployee.ID = other_roles_temp.ID 
+                          
                           
                           
                           
@@ -289,7 +309,7 @@ def editcustomer():
     names.append(result)
   cursor.close()
 
-  cursor = g.conn.execute("SELECT id FROM salesperson WHERE level != \'High\'")
+  cursor = g.conn.execute("SELECT id FROM salesperson")
   ids = []
   for result in cursor:
     ids.append(result[0])
