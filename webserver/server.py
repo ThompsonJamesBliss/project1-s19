@@ -162,12 +162,6 @@ def index():
 
   #
   # example of a database query
-  #
-  cursor = g.conn.execute("SELECT address FROM branch WHERE location = 'New York'")
-  names = []
-  for result in cursor:
-    names.append(result['address'])  # can also be accessed using result[0]
-  cursor.close()
 
   #
   # Flask uses Jinja templates, which is an extension to HTML where you can
@@ -194,9 +188,11 @@ def index():
   #     {% for n in data %}
   #     <div>{{n}}</div>
   #     {% endfor %}
-  #
+  
+  
+  
   context = dict(data = names)
-
+  
 
   #
   # render_template looks in the templates/ folder for files.
@@ -204,6 +200,13 @@ def index():
   #
   return render_template("index.html", **context)
 
+
+@app.route('/loginDM', methods=['POST'])
+  userid_input = request.form['username']
+  password_input = request.form['password']
+  password = ''
+  password = g.conn.execute('''SELECT password FROM employee WHERE id = :userid''',userid = userid_input)
+  if password_input == password:
 #
 # This is an example of a different path.  You can see it at
 # 
