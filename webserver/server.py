@@ -229,33 +229,41 @@ def loginDM():
     for result in cursor:
         password = result[0]
     cursor.close()
+        
     
-    cursor = g.conn.execute(text('''SELECT level FROM employee WHERE id = :userid'''),userid = userid_input)
-    
-    for result in cursor:
-        level = result[0]
-    cursor.close()
-    
-    cursor = g.conn.execute(text('''SELECT id FROM salesperson WHERE id = :userid'''),userid = userid_input)
-    
-    salesperson = 0
-    
-    for result in cursor:
-        salesperson = result[0]
-    cursor.close()
-    
-    if level == 'High':
-        global is_high
-        is_high = True
-    
-    if salesperson == userid_input:
-        global is_salesperson
-        is_salesperson = True
-    
-    if password_input == password:
-        return redirect("/homepage")
+    if len(userid_input)>0 and len(password) > 0:
+
+        
+        cursor = g.conn.execute(text('''SELECT level FROM employee WHERE id = :userid'''),userid = userid_input)
+        
+        for result in cursor:
+            level = result[0]
+        cursor.close()
+        
+        cursor = g.conn.execute(text('''SELECT id FROM salesperson WHERE id = :userid'''),userid = userid_input)
+        
+        salesperson = 0
+        
+        for result in cursor:
+            salesperson = result[0]
+        cursor.close()
+        
+        if level == 'High':
+            global is_high
+            is_high = True
+        
+        if salesperson == userid_input:
+            global is_salesperson
+            is_salesperson = True
+        
+        if password_input == password :
+            return redirect("/homepage")
+        else:
+            global login_error
+            login_error = True
+            return redirect("/")
     else:
-        global login_error
+        #global login_error
         login_error = True
         return redirect("/")
 #
@@ -551,7 +559,7 @@ def addcustomer():
   companysize = request.form['companysize']
   location = request.form['selectlocation']
   
-  if isParsableNum(companysize) and int(float(companysize)) >= 1:
+  if isParsableNum(companysize) and int(float(companysize)) >= 1 and (nameinput[0] != ')'and nameinput[1]!=';'):
       
       cmd = 'INSERT INTO customer VALUES((:nameval), (:sizeval), (:locval))';
       g.conn.execute(text(cmd),
@@ -595,7 +603,7 @@ def addsale():
   revenue = request.form['revenue']
   quantity = request.form['quantity']
   
-  if isParsableNum(revenue) and isParsableNum(quantity) and int(float(revenue)) > 0 and int(float(quantity)) > 0:
+  if isParsableNum(revenue) and isParsableNum(quantity) and int(float(revenue)) > 0 and int(float(quantity)) > 0 and (nameinput[0] != ')'and nameinput[1]!=';') :
       
       cmd = '''INSERT INTO salesorder VALUES(
       (SELECT ID from salesperson_customer_R WHERE customer_name = (:nameval)),
