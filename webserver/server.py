@@ -216,6 +216,11 @@ def index():
 def another():
   return render_template("another.html")
 
+@app.route('/homepage')
+def homepage():
+  return render_template("homepage.html")
+
+
 
 @app.route('/dataview')
 def dataview():
