@@ -219,7 +219,9 @@ def index():
 def loginDM():
     
     global userid_input
-    
+    global is_salesperson
+    global is_high
+    global login_error
     
     userid_input = request.form['username']
     password_input = request.form['password']
@@ -249,21 +251,26 @@ def loginDM():
         cursor.close()
         
         if level == 'High':
-            global is_high
             is_high = True
         
+        else:
+            is_high = False
+        
         if salesperson == userid_input:
-            global is_salesperson
             is_salesperson = True
         
+        else:
+            is_salesperson = False
+        
+        
         if password_input == password :
+            login_error = False
             return redirect("/homepage")
         else:
-            global login_error
             login_error = True
             return redirect("/")
     else:
-        #global login_error
+        #
         login_error = True
         return redirect("/")
 #
@@ -381,7 +388,7 @@ def editcustomer():
                           WHERE customer.customer_name = salesperson_customer_R.customer_name
                           AND salesperson_customer_R.ID = (:idval)'''
                           
-  cursor = g.conn.execute(text(cmd), idval = userid_input, error = num_cust_error)
+  cursor = g.conn.execute(text(cmd), idval = userid_input)
 
   names = []
   for result in cursor:
@@ -401,7 +408,7 @@ def editcustomer():
   cursor.close()
   
     
-  context = dict(data1 = names, data3 = locations)
+  context = dict(data1 = names, data3 = locations, error = num_cust_error)
 
   
 
@@ -419,14 +426,16 @@ def addsalesorder():
   cursor.close()
   
 
- 
-  cursor = g.conn.execute('''SELECT * FROM salesorder''')
+  cmd = '''SELECT * FROM salesorder WHERE ID = (:idval)'''
+  cursor = g.conn.execute(text(cmd), idval = userid_input)
   salesorder = []
   for result in cursor:
     salesorder.append(result)
   cursor.close()
   
-  cursor = g.conn.execute('''SELECT customer_name FROM customer''')
+  
+  txt = '''SELECT DISTINCT customer_name FROM salesorder WHERE id = (:idval)'''
+  cursor = g.conn.execute(text(cmd), idval = userid_input)
   customername = []
   for result in cursor:
     customername.append(result[0])
@@ -511,6 +520,7 @@ def changelevel():
 @app.route('/changesal', methods=['POST'])
 def changesal():
   
+  global income_error
   salary_input = request.form['newsal']
   #checking if number is parsable
   if isParsableNum(salary_input) and int(float(salary_input)) >= 20:
@@ -527,11 +537,13 @@ def changesal():
     cmd = 'DELETE FROM viewEmployee WHERE salary != (:salaryval)'
   
     g.conn.execute(text(cmd), salaryval = int(float(salary_input)));
+    
+    income_error = False
 
 
   else:
       
-      global income_error
+      
       income_error = True
 
   
@@ -555,6 +567,7 @@ def deletecustomer():
 @app.route('/addcustomer', methods=['POST'])
 def addcustomer():
   
+  global num_cust_error
   nameinput = request.form['customername'].replace(' ', '_')
   companysize = request.form['companysize']
   location = request.form['selectlocation']
@@ -573,9 +586,10 @@ def addcustomer():
                      nameval = nameinput,
                      idval = userid_input);
         
+      num_cust_error = False
   else:
-      global error_num_cust
-      error_num_cust = True
+
+      num_cust_error = True
   
   
   return redirect('/editcustomer')
@@ -603,7 +617,10 @@ def addsale():
   revenue = request.form['revenue']
   quantity = request.form['quantity']
   
-  if isParsableNum(revenue) and isParsableNum(quantity) and int(float(revenue)) > 0 and int(float(quantity)) > 0 and (nameinput[0] != ')'and nameinput[1]!=';') :
+  global rev_error
+  global quant_error
+  
+  if isParsableNum(revenue) and isParsableNum(quantity) and float(revenue) > 0 and int(float(quantity)) > 0 :
       
       cmd = '''INSERT INTO salesorder VALUES(
       (SELECT ID from salesperson_customer_R WHERE customer_name = (:nameval)),
@@ -616,16 +633,18 @@ def addsale():
       g.conn.execute(text(cmd), nameval = nameinput,
                      revenueval = float(revenue),
                      quantval = int(float(quantity)));
+      rev_error = False
+      quant_error = False
+                     
   
   
-  global rev_error
-  global quant_error
+  else:
   
-  if ~isParsableNum(revenue) or int(float(revenue)) <= 0:
-      rev_error = True
+      if ~isParsableNum(revenue) or float(revenue) <= 0:
+          rev_error = True
       
-  if ~isParsableNum(revenue) or int(float(revenue)) <= 0:
-      quant_error = True
+      if ~isParsableNum(quantity) or int(float(quantity)) <= 0:
+          quant_error = True
     
   return redirect('/addsalesorder')
 
