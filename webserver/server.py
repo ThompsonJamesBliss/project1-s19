@@ -190,23 +190,32 @@ def index():
   #     {% endfor %}
   
   
-  
-  context = dict(data = names)
-  
+    
 
   #
   # render_template looks in the templates/ folder for files.
   # for example, the below file reads template/index.html
   #
-  return render_template("index.html", **context)
+  return render_template("index.html")
 
 
 @app.route('/loginDM', methods=['POST'])
-  userid_input = request.form['username']
-  password_input = request.form['password']
-  password = ''
-  password = g.conn.execute('''SELECT password FROM employee WHERE id = :userid''',userid = userid_input)
-  if password_input == password:
+def loginDM():
+    
+    userid_input = request.form['username']
+    password_input = request.form['password']
+    password = ''
+    cursor = g.conn.execute(text('''SELECT password FROM employee WHERE id = :userid'''),userid = userid_input)
+    
+    for result in cursor:
+        password = result[0]
+    cursor.close()
+    
+    
+    if password_input == password:
+        return render_template("homepage.html")
+    else:
+        return render_template("index.html")
 #
 # This is an example of a different path.  You can see it at
 # 
