@@ -46,6 +46,20 @@ DB_SERVER = server
 
 DATABASEURI = "postgresql://"+DB_USER+":"+DB_PASSWORD+"@"+DB_SERVER+"/w4111"
 
+global rev_error
+rev_error = False
+global quant_error
+quant_error = False
+global login_error
+login_error = False
+global num_cust_error
+num_cust_error = False
+global income_error
+income = False
+global is_salesman
+is_salesman = False
+global is_high
+is_high = False
 
 #
 # This line creates a database engine that knows how to connect to the URI above
@@ -375,7 +389,11 @@ def addsalesorder():
   cursor.close()
 
 
-  context = dict(data1 = ids, data2 = salesorder, data3 = customername)
+  context = dict(data1 = ids,
+                 data2 = salesorder,
+                 data3 = customername,
+                 error1 = rev_error,
+                 error2 = quant_error)
 
   return render_template("addsalesorder.html", **context)
 
@@ -487,7 +505,7 @@ def deletecustomer():
 @app.route('/addcustomer', methods=['POST'])
 def addcustomer():
   
-  nameinput = request.form['customername']
+  nameinput = request.form['customername'].replace(' ', '_')
   companysize = request.form['companysize']
   ID = request.form['selectID']
   location = request.form['selectlocation']
@@ -549,7 +567,15 @@ def addsale():
                      quantval = int(float(quantity)));
   
   
+  global rev_error
+  global quant_error
   
+  if ~isParsableNum(revenue) or int(float(revenue)) <= 0:
+      rev_error = True
+      
+  if ~isParsableNum(revenue) or int(float(revenue)) <= 0:
+      quant_error = True
+    
   return redirect('/addsalesorder')
 
 

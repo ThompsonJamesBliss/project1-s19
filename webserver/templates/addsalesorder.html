@@ -9,6 +9,17 @@
 <body>
   <h1>Dunder Mifflin Add Sales Order</h1>
 
+{% if error1 %}
+
+<p style="color:red"> ERROR: Please enter a valid number for company revenue.</p>
+
+{% endif %}
+
+{% if error2 %}
+
+<p style="color:red"> ERROR: Please enter a valid number for quantity revenue.</p>
+
+{% endif %}
 
 
 <h2>Current Sales Orders:</h2>
