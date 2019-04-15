@@ -519,6 +519,7 @@ def viewsalesorder():
 
 @app.route('/addsale', methods=['POST'])
 def addsale():
+    
   
   nameinput = request.form['selectcustomer']
   revenue = request.form['revenue']
