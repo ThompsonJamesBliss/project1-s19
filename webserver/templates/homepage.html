@@ -12,9 +12,13 @@
 
 
 <p><a href="/dataview">View Data on Branches</a></p>
+{% if status1%}
 <p><a href="/editemployee">Edit Employee Data</a></p>
+{% endif %}
+{% if status2%}
 <p><a href="/editcustomer">Edit Customers</a></p>
 <p><a href="/addsalesorder">Add SalesOrder</a></p>
+{% endif %}
 <p><a href="/">Logout</a></p>
 
 

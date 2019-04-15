@@ -55,9 +55,9 @@ login_error = False
 global num_cust_error
 num_cust_error = False
 global income_error
-income = False
-global is_salesman
-is_salesman = False
+income_error = False
+global is_salesperson
+is_salesperson = False
 global is_high
 is_high = False
 
@@ -210,11 +210,16 @@ def index():
   # render_template looks in the templates/ folder for files.
   # for example, the below file reads template/index.html
   #
-  return render_template("index.html")
+  context = dict(error = login_error)
+  
+  return render_template("index.html", **context)
 
 
 @app.route('/loginDM', methods=['POST'])
 def loginDM():
+    
+    global userid_input
+    
     
     userid_input = request.form['username']
     password_input = request.form['password']
@@ -225,11 +230,34 @@ def loginDM():
         password = result[0]
     cursor.close()
     
+    cursor = g.conn.execute(text('''SELECT level FROM employee WHERE id = :userid'''),userid = userid_input)
+    
+    for result in cursor:
+        level = result[0]
+    cursor.close()
+    
+    cursor = g.conn.execute(text('''SELECT id FROM salesperson WHERE id = :userid'''),userid = userid_input)
+    
+    salesperson = 0
+    
+    for result in cursor:
+        salesperson = result[0]
+    cursor.close()
+    
+    if level == 'High':
+        global is_high
+        is_high = True
+    
+    if salesperson == userid_input:
+        global is_salesperson
+        is_salesperson = True
     
     if password_input == password:
-        return render_template("homepage.html")
+        return redirect("/homepage")
     else:
-        return render_template("index.html")
+        global login_error
+        login_error = True
+        return redirect("/")
 #
 # This is an example of a different path.  You can see it at
 # 
@@ -244,7 +272,11 @@ def another():
 
 @app.route('/homepage')
 def homepage():
-  return render_template("homepage.html")
+  
+  
+    
+  context = dict(status1 = is_high, status2 = is_salesperson)
+  return render_template("homepage.html", **context)
 
 
 
@@ -323,7 +355,7 @@ def editemployee():
   cursor.close()
   
     
-  context = dict(data1 = ids, data2 = levels, data3 = empdata)
+  context = dict(data1 = ids, data2 = levels, data3 = empdata, error = income_error)
 
   
 
@@ -332,23 +364,27 @@ def editemployee():
 @app.route('/editcustomer')
 def editcustomer():
   
-  cursor = g.conn.execute('''SELECT customer.customer_name,
+  cmd = '''SELECT customer.customer_name,
                           customer.company_size,
-                          customer.location,
-                          salesperson_customer_R.id FROM 
-                          customer JOIN salesperson_customer_R on
-                          customer.customer_name = salesperson_customer_R.customer_name''')
+                          customer.location
+                          
+                          FROM customer, salesperson_customer_R
+                          
+                          WHERE customer.customer_name = salesperson_customer_R.customer_name
+                          AND salesperson_customer_R.ID = (:idval)'''
+                          
+  cursor = g.conn.execute(text(cmd), idval = userid_input, error = num_cust_error)
 
   names = []
   for result in cursor:
     names.append(result)
   cursor.close()
 
-  cursor = g.conn.execute("SELECT id FROM salesperson")
-  ids = []
-  for result in cursor:
-    ids.append(result[0])
-  cursor.close()
+  #cursor = g.conn.execute("SELECT id FROM salesperson")
+  #ids = []
+  #for result in cursor:
+  #  ids.append(result[0])
+  #cursor.close()
   
   cursor = g.conn.execute("SELECT location FROM branch")
   locations = []
@@ -357,7 +393,7 @@ def editcustomer():
   cursor.close()
   
     
-  context = dict(data1 = names, data2 = ids, data3 = locations)
+  context = dict(data1 = names, data3 = locations)
 
   
 
@@ -485,7 +521,13 @@ def changesal():
     g.conn.execute(text(cmd), salaryval = int(float(salary_input)));
 
 
+  else:
+      
+      global income_error
+      income_error = True
+
   
+    
   return redirect('/editemployee')
 
 
@@ -507,7 +549,6 @@ def addcustomer():
   
   nameinput = request.form['customername'].replace(' ', '_')
   companysize = request.form['companysize']
-  ID = request.form['selectID']
   location = request.form['selectlocation']
   
   if isParsableNum(companysize) and int(float(companysize)) >= 1:
@@ -522,9 +563,11 @@ def addcustomer():
       
       g.conn.execute(text(cmd),
                      nameval = nameinput,
-                     idval = ID);
+                     idval = userid_input);
         
-  
+  else:
+      global error_num_cust
+      error_num_cust = True
   
   
   return redirect('/editcustomer')
@@ -532,7 +575,7 @@ def addcustomer():
 @app.route('/viewsalesorder', methods=['POST'])
 def viewsalesorder():
   
-  id_input = request.form['selectID']
+  #id_input = request.form['selectID']
   
   #deleting everything during view so it will not bleed into next view
   g.conn.execute("DELETE FROM salesorder_temp")
@@ -540,7 +583,7 @@ def viewsalesorder():
   #inserting new employee info into view
   cmd = '''INSERT INTO salesorder_temp SELECT customer_name, order_num, 
   salesorder_revenue, quantity FROM salesorder WHERE ID = (:idval)''';
-  g.conn.execute(text(cmd), idval = id_input);
+  g.conn.execute(text(cmd), idval = userid_input);
   return redirect('/addsalesorder')
 
 

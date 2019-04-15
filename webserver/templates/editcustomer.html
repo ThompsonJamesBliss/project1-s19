@@ -9,6 +9,12 @@
 <body>
   <h1>Dunder Mifflin Edit Customer</h1>
 
+{% if error %}
+
+<p style="color:red"> ERROR: Please enter a valid number of employees.</p>
+
+{% endif %}
+
 
 <h2>Current Customers:</h2>
 
@@ -18,7 +24,6 @@
     <th align=left>Name</th>
     <th align=left>Number of Employees</th> 
     <th align=left>Dunder Mifflin Service Location</th>
-    <th align=left>Dunder Mifflin Representative ID</th>
   </tr>
   <tbody>
     {% for n in data1 %}
@@ -26,7 +31,6 @@
         <td>{{n[0]}}</td>
         <td>{{n[1]}}</td>
         <td>{{n[2]}}</td>
-        <td>{{n[3]}}</td>
     </tr>
     <!--<div>{{n}}</div>-->
     {% endfor %}
@@ -60,8 +64,8 @@
 <form method="POST" action="/addcustomer">
 <p>Enter Customer Name: <input type="text" name="customername"></p>
 <p>Enter Company Size: <input type="text" name="companysize"></p>
-<p>Choose Dunder Mifflin Representative ID</p>
 
+<!--
 <input name = "selectID" list = "selectID">
 <datalist id = "selectID">
   {% for n in data2 %}
@@ -72,7 +76,7 @@
   </p>
   {% endfor %}
   
-</datalist>
+</datalist>  -->
 
 <p>Choose Branch</p>
 
