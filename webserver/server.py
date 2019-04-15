@@ -60,6 +60,7 @@ engine = create_engine(DATABASEURI)
 engine.execute("""DROP TABLE IF EXISTS viewData;""")
 engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
   location text,
+  manager_id text,
   address text,
   branch_profit float,
   no_customers int,
@@ -246,7 +247,21 @@ def editemployee():
   cursor.close()
 
 
-  cursor = g.conn.execute("SELECT * FROM viewEmployee LIMIT 1")
+  cursor = g.conn.execute('''SELECT * FROM viewEmployee 
+                          
+                          
+                          LEFT JOIN (SELECT ID, 'Manager' FROM Manager) as Manager_temp
+                          ON viewEmployee.ID = Manager_temp.ID 
+                          
+                          LEFT JOIN (SELECT ID, 'salesperson' FROM salesperson) as salesperson_temp
+                          ON viewEmployee.ID = salesperson_temp.ID 
+                          
+                          LEFT JOIN (SELECT * FROM other_roles) as other_roles_temp
+                          ON viewEmployee.ID = other_roles_temp.ID 
+                          
+                          
+                          
+                          LIMIT 1''')
   empdata = []
   for result in cursor:
     empdata.append(result)
@@ -258,7 +273,6 @@ def editemployee():
   
 
   return render_template("editemployee.html", **context)
-
 
 @app.route('/editcustomer')
 def editcustomer():
@@ -333,7 +347,7 @@ def view():
   
   g.conn.execute("DELETE FROM viewData")
   for inp, loc in enumerate(locations):
-    cmd = '''INSERT INTO viewData select x.location, t.address, sum(x.profit) as Branch_profit,y.no_customers as No_customers, z.Quantsold, z.salesRevenue
+    cmd = '''INSERT INTO viewData select x.location, m.id as Manager_Id,t.address, sum(x.profit) as Branch_profit,y.no_customers as No_customers, z.Quantsold, z.salesRevenue
 from
 	((select location,department_name, (dept_revenue - dept_cost) as profit
 	from department_branch_r) as x
@@ -346,8 +360,9 @@ from
 	 from salesorder as p left outer join customer as j on p.customer_name = j.customer_name
 	 group by j.location) as z on z.location = y.location
 	left outer join branch as t on t.location = z.location
+    left outer join manager as m on m.location = z.location
 where x.location = :branchloc
-group by x.location, y.no_customers, z.Quantsold, z.salesRevenue,t.address
+group by x.location, y.no_customers, z.Quantsold, z.salesRevenue,t.address,m.id
 order by z.salesRevenue desc''';
     var1=g.conn.execute(text(cmd), branchloc = loc);
   return redirect('/dataview')
