@@ -249,6 +249,7 @@ def dataview():
 @app.route('/editemployee')
 def editemployee():
   
+    
   cursor = g.conn.execute("SELECT id FROM employee")
   ids = []
   for result in cursor:
@@ -262,25 +263,28 @@ def editemployee():
   cursor.close()
 
 
-  engine.execute("""INSERT INTO other_roles_tmp(ID, job_function)
-               VALUES( (SELECT manager.ID FROM manager WHERE ), 'Manager');""")
+  g.conn.execute("""INSERT INTO other_roles_tmp(ID, job_function)
+               VALUES( (SELECT manager.ID FROM manager WHERE
+               (SELECT ID from viewEmployee LIMIT 1) = manager.ID), 'Manager');""")
+  
+  g.conn.execute("""INSERT INTO other_roles_tmp(ID, job_function)
+               VALUES( (SELECT other_roles.ID FROM other_roles WHERE
+               (SELECT ID from viewEmployee LIMIT 1) = other_roles.ID), 
+  
+              (SELECT other_roles.job_function FROM other_roles WHERE
+               (SELECT ID from viewEmployee LIMIT 1) = other_roles.ID));""")
+  
+  
+  g.conn.execute("""INSERT INTO other_roles_tmp(ID, job_function)
+               VALUES( (SELECT salesperson.ID FROM salesperson WHERE
+               (SELECT ID from viewEmployee LIMIT 1) = salesperson.ID), 'Salesperson');""")
 
-  cursor = g.conn.execute('''SELECT * FROM viewEmployee 
-                          
-                          
-                          LEFT JOIN   (SELECT * FROM other_roles) as other_roles_temp
-                                      ON viewEmployee.ID = other_roles_temp.ID
+  cursor = g.conn.execute('''SELECT viewEmployee.ID, viewEmployee.name,
+                          viewEmployee.salary, viewEmployee.level,
+                          other_roles_tmp.job_function FROM viewEmployee 
                          
-                          LEFT JOIN (SELECT ID, 'Manager' FROM Manager) as Manager_temp
-                          ON viewEmployee.ID = Manager_temp.ID 
-                          
-                          LEFT JOIN (SELECT ID, 'salesperson' FROM salesperson) as salesperson_temp
-                          ON viewEmployee.ID = salesperson_temp.ID 
-                          
-                          
-                          
-                          
-                          
+                          INNER JOIN other_roles_tmp ON viewEmployee.ID = other_roles_tmp.ID
+                        
                           LIMIT 1''')
   empdata = []
   for result in cursor:
