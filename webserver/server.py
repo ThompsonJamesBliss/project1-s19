@@ -434,7 +434,7 @@ def addsalesorder():
   cursor.close()
   
   
-  txt = '''SELECT DISTINCT customer_name FROM salesorder WHERE id = (:idval)'''
+  cmd = '''SELECT DISTINCT customer_name FROM salesorder WHERE id = (:idval)'''
   cursor = g.conn.execute(text(cmd), idval = userid_input)
   customername = []
   for result in cursor:
@@ -442,8 +442,7 @@ def addsalesorder():
   cursor.close()
 
 
-  context = dict(data1 = ids,
-                 data2 = salesorder,
+  context = dict(data2 = salesorder,
                  data3 = customername,
                  error1 = rev_error,
                  error2 = quant_error)
