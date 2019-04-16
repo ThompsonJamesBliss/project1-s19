@@ -571,12 +571,10 @@ def deletecustomer():
   
   
   #deleteing employee with name
-      cmd1 = 'DELETE FROM salesperson_customer_R WHERE customer_name = (:nameval) AND id = (:idval)';
+      cmd1 = 'DELETE FROM salesperson_customer_R WHERE customer_name = (:nameval)';
       cmd2 = '''DELETE FROM customer
-      WHERE customer_name = (:nameval)
-      AND (:idval) = (SELECT ID FROM (customer JOIN salesperson_customer_R ON
-          customer.customer_name = salesperson_customer_R.customer_name) as temp) ''';
-      g.conn.execute(text(cmd1), nameval = nameinput, idval = userid_input);
+      WHERE customer_name = (:nameval) ''';
+      g.conn.execute(text(cmd1), nameval = nameinput);
       g.conn.execute(text(cmd2), nameval = nameinput, idval = userid_input);
       
       
