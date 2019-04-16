@@ -1,0 +1,95 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+
+<body>
+  <h1>Dunder Mifflin Branch Employee Data Edit</h1>
+
+{% if error %}
+
+<p style="color:red"> ERROR: Please enter a valid salary.</p>
+
+{% endif %}
+
+
+<h2>Choose an Employee:</h2>
+
+<form method="POST" action="/viewemployee">
+  <input name = "selectID" list = "selectID">
+  <datalist id = "selectID">
+  {% for n in data1 %}
+  <p>
+  
+    <option value={{n}}>{{n}}</option>
+
+  </p>
+  {% endfor %}
+  
+  </datalist>
+  <input type="submit">
+</form>  
+
+
+
+<div>
+<table style="width:50%">
+  <tr>
+    <th align=left>Employee ID</th>
+    <th align=left>Employee Name</th> 
+    <th align=left>Salary</th>
+    <th align=left>Clearance Level</th>
+    <th align=left>Role</th>
+  </tr>
+  <tbody>
+    {% for n in data3 %}
+    <tr>
+        <td>{{n[0]}}</td>
+        <td>{{n[1]}}</td>
+        <td>{{n[2]}}</td>
+        <td>{{n[3]}}</td>
+        <td>{{n[4]}}</td>
+    </tr>
+    <!--<div>{{n}}</div>-->
+    {% endfor %}
+  </tbody>
+</table>
+
+<hr></hr>
+</div>
+
+<h2>Choose the level you wish to change them to:</h2>
+
+<form method="POST" action="/changelevel">
+  <select name="selectLevel" size="3" multiple>
+  {% for n in data2 %}
+  <p>
+  
+    <option value={{n}}>{{n}}</option>
+
+  </p>
+  {% endfor %}
+  
+  </select>
+  <input type="submit">
+</form>  
+
+<h2>Enter New Salary:</h2>
+<form method="POST" action="/changesal">
+<p> <input type="text" name="newsal"> <input type="submit" value="Submit"></p>
+</form>
+
+
+
+<p><a href="/homepage">Return to Home</a></p>
+
+  
+</body>
+
+
+
+</html>
