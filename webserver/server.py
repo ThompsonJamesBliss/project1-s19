@@ -562,8 +562,8 @@ def deletecustomer():
   WHERE customer.customer_name = (:nameval)
   AND salesperson_customer_R.customer_name = customer.customer_name
   AND salesperson_customer_R.id = (:idval)''';
-  g.conn.execute(text(cmd1), nameval = nameinput, idval = user_input_id);
-  g.conn.execute(text(cmd2), nameval = nameinput, idval = user_input_id);
+  g.conn.execute(text(cmd1), nameval = nameinput, idval = userid_input);
+  g.conn.execute(text(cmd2), nameval = nameinput, idval = userid_input);
   return redirect('/editcustomer')
 
 
