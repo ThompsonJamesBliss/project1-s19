@@ -558,8 +558,9 @@ def deletecustomer():
   nameinput = request.form['deletecustomer']
   nameinput.replace(' ','_')
   
-  cursor = g.conn.execute(text('''SELECT id from salesperson_customer_R WHERE
-                               customer_name = (:nameinput)'''), nameval = nameinput)
+  cmd = '''SELECT id from salesperson_customer_R WHERE
+                               customer_name = (:nameinput)'''
+  cursor = g.conn.execute(text(cmd), nameval = nameinput)
   
   idvalues = []
   for result in cursor:
@@ -577,7 +578,9 @@ def deletecustomer():
           customer.customer_name = salesperson_customer_R.customer_name) as temp) ''';
       g.conn.execute(text(cmd1), nameval = nameinput, idval = userid_input);
       g.conn.execute(text(cmd2), nameval = nameinput, idval = userid_input);
-      return redirect('/editcustomer')
+      
+      
+  return redirect('/editcustomer')
 
 
 @app.route('/addcustomer', methods=['POST'])
