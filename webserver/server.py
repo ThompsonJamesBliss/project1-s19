@@ -70,10 +70,6 @@ engine = create_engine(DATABASEURI)
 
 #creating tables for viewing
 
-engine.execute("""DROP TABLE IF EXISTS test2;""")
-
-engine.execute("""DROP TABLE IF EXISTS test;""")
-
 
 engine.execute("""DROP TABLE IF EXISTS viewData;""")
 engine.execute("""CREATE TABLE IF NOT EXISTS viewData (
@@ -216,6 +212,11 @@ def index():
 
 @app.route('/loginDM', methods=['POST'])
 def loginDM():
+    
+    g.conn.execute("DELETE FROM salesorder_temp")
+    g.conn.execute("DELETE FROM viewEmployee")
+    g.conn.execute("DELETE FROM viewData")
+    g.conn.execute("DELETE FROM other_roles_tmp")
     
     global userid_input
     global is_salesperson
