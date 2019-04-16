@@ -559,7 +559,7 @@ def deletecustomer():
   nameinput.replace(' ','_')
   
   cmd = '''SELECT id from salesperson_customer_R WHERE
-                               customer_name = (:nameinput)'''
+                               customer_name = (:nameval)'''
   cursor = g.conn.execute(text(cmd), nameval = nameinput)
   
   idvalues = []
