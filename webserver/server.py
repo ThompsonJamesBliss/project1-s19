@@ -558,15 +558,26 @@ def deletecustomer():
   nameinput = request.form['deletecustomer']
   nameinput.replace(' ','_')
   
+  cursor = g.conn.execute(text('''SELECT id from salesperson_customer_R WHERE
+                               customer_name = (:nameinput)'''), nameval = nameinput)
+  
+  idvalues = []
+  for result in cursor:
+    idvalues.append(result[0])
+  cursor.close()
+  
+  if idvalues == userid_input:
+  
+  
   #deleteing employee with name
-  cmd1 = 'DELETE FROM salesperson_customer_R WHERE customer_name = (:nameval) AND id = (:idval)';
-  cmd2 = '''DELETE FROM customer, salesperson_customer_R
-  WHERE customer.customer_name = (:nameval)
-  AND salesperson_customer_R.customer_name = customer.customer_name
-  AND salesperson_customer_R.id = (:idval)''';
-  g.conn.execute(text(cmd1), nameval = nameinput, idval = userid_input);
-  g.conn.execute(text(cmd2), nameval = nameinput, idval = userid_input);
-  return redirect('/editcustomer')
+      cmd1 = 'DELETE FROM salesperson_customer_R WHERE customer_name = (:nameval) AND id = (:idval)';
+      cmd2 = '''DELETE FROM customer
+      WHERE customer_name = (:nameval)
+      AND (:idval) = (SELECT ID FROM (customer JOIN salesperson_customer_R ON
+          customer.customer_name = salesperson_customer_R.customer_name) as temp) ''';
+      g.conn.execute(text(cmd1), nameval = nameinput, idval = userid_input);
+      g.conn.execute(text(cmd2), nameval = nameinput, idval = userid_input);
+      return redirect('/editcustomer')
 
 
 @app.route('/addcustomer', methods=['POST'])
