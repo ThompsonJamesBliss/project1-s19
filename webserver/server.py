@@ -567,7 +567,7 @@ def deletecustomer():
     idvalues.append(result[0])
   cursor.close()
   
-  if idvalues == userid_input:
+  if idvalues[0] == userid_input:
   
   
   #deleteing employee with name
