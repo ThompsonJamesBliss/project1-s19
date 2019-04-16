@@ -553,6 +553,8 @@ def changesal():
 @app.route('/deletecustomer', methods=['POST'])
 def deletecustomer():
   
+    
+  global userid_input  
   nameinput = request.form['deletecustomer']
   nameinput.replace(' ','_')
   
