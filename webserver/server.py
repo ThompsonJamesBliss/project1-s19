@@ -434,7 +434,8 @@ def addsalesorder():
   cursor.close()
   
   
-  cmd = '''SELECT DISTINCT customer_name FROM salesorder WHERE id = (:idval)'''
+  cmd = '''SELECT DISTINCT customer.customer_name FROM customer, salesperson_customer_R
+          WHERE salesperson_customer_R.id = (:idval) AND salesperson_customer_R.customer_name = customer.customer_name'''
   cursor = g.conn.execute(text(cmd), idval = userid_input)
   customername = []
   for result in cursor:
