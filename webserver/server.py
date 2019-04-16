@@ -38,8 +38,8 @@ app = Flask(__name__, template_folder=tmpl_dir)
 # For your convenience, we already set it to the class database
 
 # Use the DB credentials you received by e-mail
-DB_USER = os.environ['username']
-DB_PASSWORD = os.environ['password']
+DB_USER = "pil2104"#os.environ['username']
+DB_PASSWORD = "2DJrhu9AoT" #os.environ['password']
 
 DB_SERVER = "w4111.cisxo09blonu.us-east-1.rds.amazonaws.com"
 
@@ -554,12 +554,16 @@ def changesal():
 def deletecustomer():
   
   nameinput = request.form['deletecustomer']
+  nameinput.replace(' ','_')
   
   #deleteing employee with name
-  cmd1 = 'DELETE FROM salesperson_customer_R WHERE customer_name = (:nameval)';
-  cmd2 = 'DELETE FROM customer WHERE customer_name = (:nameval)';
-  g.conn.execute(text(cmd1), nameval = nameinput);
-  g.conn.execute(text(cmd2), nameval = nameinput);
+  cmd1 = 'DELETE FROM salesperson_customer_R WHERE customer_name = (:nameval) AND id = (:idval)';
+  cmd2 = '''DELETE FROM customer, salesperson_customer_R
+  WHERE customer.customer_name = (:nameval)
+  AND salesperson_customer_R.customer_name = customer.customer_name
+  AND salesperson_customer_R.id = (:idval)''';
+  g.conn.execute(text(cmd1), nameval = nameinput, idval = user_input_id);
+  g.conn.execute(text(cmd2), nameval = nameinput, idval = user_input_id);
   return redirect('/editcustomer')
 
 
